@@ -1,3 +1,5 @@
+use core::panic;
+
 use chrono::{DateTime, TimeZone, Utc};
 use reqwest::Error;
 use serde::{self, Deserialize, Deserializer};
@@ -42,12 +44,14 @@ impl<'de> Deserialize<'de> for Parameter {
             }
             "pcat" => {
                 for value in internal.values {
-                    new_values.push(ParameterValue::PercipitaionCategory(value as u8));
+                    new_values.push(ParameterValue::Category(PercipitaionCategory::new(
+                        value as u8,
+                    )));
                 }
             }
             "Wsymb2" => {
                 for value in internal.values {
-                    new_values.push(ParameterValue::WeatherSymbol(value as u8));
+                    new_values.push(ParameterValue::Code(WeatherSymbol::new(value as u8)));
                 }
             }
             _ => {
@@ -67,11 +71,33 @@ impl<'de> Deserialize<'de> for Parameter {
 }
 
 #[derive(Debug)]
+struct WeatherSymbol(u8);
+impl WeatherSymbol {
+    fn new(value: u8) -> Self {
+        if value > 27 || value == 0 {
+            panic!("PercipitaionCategory should be 1-27")
+        }
+        WeatherSymbol(value)
+    }
+}
+
+#[derive(Debug)]
+struct PercipitaionCategory(u8);
+impl PercipitaionCategory {
+    fn new(value: u8) -> Self {
+        if value > 6 {
+            panic!("PercipitaionCategory should be 1-27")
+        }
+        PercipitaionCategory(value)
+    }
+}
+
+#[derive(Debug)]
 enum ParameterValue {
     Decimal(f64),
     Integer(i32),
-    PercipitaionCategory(u8),
-    WeatherSymbol(u8),
+    Category(PercipitaionCategory),
+    Code(WeatherSymbol),
 }
 
 #[derive(Debug, Deserialize)]
