@@ -1,3 +1,4 @@
+use chrono::{DateTime, TimeZone, Utc};
 use reqwest::Error;
 use serde::{self, Deserialize, Deserializer};
 use serde_json::from_str;
@@ -76,15 +77,33 @@ enum ParameterValue {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct TimeSeries {
-    valid_time: String,
+    #[serde(with = "datetime_format")]
+    valid_time: DateTime<Utc>,
     parameters: Vec<Parameter>,
+}
+
+mod datetime_format {
+    use chrono::{DateTime, Utc};
+    use serde::{Deserialize, Deserializer};
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(DateTime::parse_from_rfc3339(s.as_str())
+            .unwrap()
+            .with_timezone(&Utc))
+    }
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct ApiResponse {
-    approved_time: String,
-    reference_time: String,
+    #[serde(with = "datetime_format")]
+    approved_time: DateTime<Utc>,
+    #[serde(with = "datetime_format")]
+    reference_time: DateTime<Utc>,
     geometry: Geometry,
     time_series: Vec<TimeSeries>,
 }
@@ -97,13 +116,12 @@ async fn fetch_json(url: &str) -> Result<String, Error> {
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
-
+    eprintln!("Starting...");
     let api_response =
         fetch_json("https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json")
             .await
             .unwrap();
 
     let parsed_response: ApiResponse = from_str(api_response.as_str()).unwrap();
-    println!("{:#?}", parsed_response);
+    println!("{:?}", parsed_response);
 }
