@@ -12,8 +12,8 @@ pub struct Parameter {
 enum ParameterValue {
     Decimal(f64),
     Integer(i32),
-    Category(PercipitaionCategory),
-    Code(WeatherSymbol),
+    PCat(PercipitaionCategory),
+    WSymb(WeatherSymbol),
 }
 
 #[derive(Debug)]
@@ -46,14 +46,12 @@ impl<'de> Deserialize<'de> for Parameter {
             }
             "pcat" => {
                 for value in internal.values {
-                    new_values.push(ParameterValue::Category(PercipitaionCategory::new(
-                        value as u8,
-                    )));
+                    new_values.push(ParameterValue::PCat(PercipitaionCategory::new(value as u8)));
                 }
             }
             "Wsymb2" => {
                 for value in internal.values {
-                    new_values.push(ParameterValue::Code(WeatherSymbol::new(value as u8)));
+                    new_values.push(ParameterValue::WSymb(WeatherSymbol::new(value as u8)));
                 }
             }
             _ => {
