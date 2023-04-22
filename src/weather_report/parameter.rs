@@ -2,10 +2,34 @@ use super::*;
 
 #[derive(Debug)]
 pub struct Parameter {
-    pub name: String,
+    pub name: ParameterName,
     pub level_type: String,
     pub level: u32,
     pub values: Vec<ParameterValue>,
+}
+
+#[allow(non_camel_case_types)]
+#[derive(Deserialize, Debug, strum_macros::Display)]
+pub enum ParameterName {
+    msl,
+    t,
+    vis,
+    wd,
+    ws,
+    r,
+    tstm,
+    tcc_mean,
+    lcc_mean,
+    mcc_mean,
+    hcc_mean,
+    gust,
+    pmin,
+    pmax,
+    spp,
+    pcat,
+    pmean,
+    pmedian,
+    Wsymb2,
 }
 
 #[derive(Debug)]
@@ -87,7 +111,7 @@ impl<'de> Deserialize<'de> for Parameter {
         #[derive(Deserialize)]
         #[serde(rename_all = "camelCase")]
         struct __ParameterInternal {
-            name: String,
+            name: ParameterName,
             level_type: String,
             level: u32,
             values: Vec<f64>,
@@ -96,18 +120,26 @@ impl<'de> Deserialize<'de> for Parameter {
         let internal: __ParameterInternal = Deserialize::deserialize(deserializer)?;
         let mut new_values = Vec::new();
 
-        match internal.name.as_str() {
-            "msl" | "t" | "vis" | "ws" | "gust" | "pmin" | "pmax" | "pmean" | "pmedian" => {
+        match internal.name {
+            ParameterName::msl
+            | ParameterName::t
+            | ParameterName::vis
+            | ParameterName::ws
+            | ParameterName::gust
+            | ParameterName::pmin
+            | ParameterName::pmax
+            | ParameterName::pmean
+            | ParameterName::pmedian => {
                 for value in internal.values {
                     new_values.push(ParameterValue::Decimal(value));
                 }
             }
-            "pcat" => {
+            ParameterName::pcat => {
                 for value in internal.values {
                     new_values.push(ParameterValue::PercipitationCategory(value as u8));
                 }
             }
-            "Wsymb2" => {
+            ParameterName::Wsymb2 => {
                 for value in internal.values {
                     new_values.push(ParameterValue::WeatherSymbol(value as u8));
                 }
