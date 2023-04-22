@@ -7,7 +7,9 @@ pub mod weather_report;
 #[tokio::main]
 async fn main() {
     eprintln!("Starting...");
-    let weather_report = io::get_weather_report(types::Location::Sollentuna).await;
+    let weather_report = io::get_weather_report(types::Location::Sollentuna).await.unwrap();
 
-    println!("{:?}", weather_report);
+    for time_series in weather_report.time_series {
+        println!("{}", time_series);
+    }
 }
