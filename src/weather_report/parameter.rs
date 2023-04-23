@@ -11,7 +11,9 @@ pub struct Parameter {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Deserialize, Debug, strum_macros::Display, Clone, Eq, PartialEq, Hash, Sequence)]
+#[derive(
+    Deserialize, Debug, strum_macros::Display, Clone, Eq, PartialEq, Hash, Sequence, clap::ValueEnum,
+)]
 pub enum ParameterName {
     msl,
     t,
@@ -65,6 +67,10 @@ impl ParameterName {
             ParameterName::pmedian => Some("mm/h"),
             ParameterName::Wsymb2 => None,
         }
+    }
+
+    pub fn count() -> usize {
+        enum_iterator::all::<ParameterName>().count()
     }
 }
 

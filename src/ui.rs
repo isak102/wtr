@@ -7,12 +7,12 @@ use super::weather_report::WeatherReport;
 pub fn show_forecast(
     weather_report: &WeatherReport,
     parameters: Option<&[ParameterName]>,
-    hours_to_show: Option<usize>,
+    hours_to_show: Option<u8>,
 ) {
     let all_parameters = enum_iterator::all::<ParameterName>().collect::<Vec<_>>();
 
     let parameter_names = parameters.unwrap_or(all_parameters.as_slice());
-    let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len());
+    let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len() as u8);
 
     let mut table = prettytable::Table::new();
 
@@ -25,7 +25,7 @@ pub fn show_forecast(
 
     table.set_titles(Row::new(titles));
 
-    for time_series in weather_report.time_series.iter().take(hours_to_show) {
+    for time_series in weather_report.time_series.iter().take(hours_to_show as usize) {
         let mut row = Row::new(Vec::new());
         row.add_cell(Cell::new(time_series.valid_time.to_string().as_str()));
 
