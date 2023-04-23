@@ -4,9 +4,9 @@ use chrono::{DateTime, Utc};
 use serde::{self, Deserialize, Deserializer};
 
 mod datetime_format;
-mod parameter;
+pub mod parameter;
 
-use parameter::Parameter;
+pub use parameter::Parameter;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

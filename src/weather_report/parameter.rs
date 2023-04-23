@@ -9,7 +9,7 @@ pub struct Parameter {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Deserialize, Debug, strum_macros::Display)]
+#[derive(Deserialize, Debug, strum_macros::Display, Clone)]
 pub enum ParameterName {
     msl,
     t,
