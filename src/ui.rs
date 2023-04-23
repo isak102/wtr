@@ -10,29 +10,36 @@ pub fn show_forecast(
 ) {
     let mut table = prettytable::Table::new();
 
-    table.set_titles(Row::new(
-        parameters
-            .iter()
-            .map(|p| Cell::new(p.to_string().as_str()))
-            .collect(),
-    ));
+    let mut titles: Vec<Cell> = Vec::new();
+    titles.push(Cell::new("Time"));
 
-    let mut testrow = Row::new(Vec::with_capacity(2));
-    testrow.insert_cell(1, Cell::new("test"));
-    table.add_row(testrow);
+    for parameter in parameters {
+        titles.push(Cell::new(parameter.to_string().as_str()));
+    }
 
-    // let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len());
-    //
-    // for time_series in weather_report.time_series.iter().take(hours_to_show) {
-    //     table.add_row(row![
-    //         time_series.time,
-    //         time_series.temperature,
-    //         time_series.precipitation,
-    //         time_series.wind,
-    //         time_series.clouds,
-    //         time_series.weather
-    //     ]);
-    // }
+    table.set_titles(Row::new(titles));
+
+    let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len());
+
+    for time_series in weather_report.time_series.iter().take(hours_to_show) {
+        let mut row = Row::new(Vec::new());
+        row.add_cell(Cell::new(
+            time_series.valid_time.to_string().as_str(),
+        ));
+
+        for key in parameters {
+            let mut f = |s| {
+                row.add_cell(Cell::new(s));
+            };
+
+            if let Some(value) = time_series.parameters.get(key) {
+                f(value.values[0].to_string().as_str())
+            } else {
+                f("N/A")
+            }
+        }
+        table.add_row(row);
+    }
 
     table.printstd();
 }

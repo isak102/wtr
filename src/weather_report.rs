@@ -11,6 +11,7 @@ pub use parameter::Parameter;
 
 use self::parameter::{ParameterName, ParameterValue};
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WeatherReport {
@@ -22,6 +23,7 @@ pub struct WeatherReport {
     pub time_series: Vec<TimeSeries>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct Geometry {
     #[serde(rename = "type")]
@@ -31,8 +33,8 @@ struct Geometry {
 
 #[derive(Debug)]
 pub struct TimeSeries {
-    valid_time: DateTime<Utc>,
-    parameters: HashMap<ParameterName, Parameter>,
+    pub valid_time: DateTime<Utc>,
+    pub parameters: HashMap<ParameterName, Parameter>,
 }
 
 impl<'de> Deserialize<'de> for TimeSeries {

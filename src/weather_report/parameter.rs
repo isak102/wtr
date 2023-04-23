@@ -1,4 +1,5 @@
 use super::*;
+use enum_iterator::Sequence;
 
 #[derive(Debug)]
 pub struct Parameter {
@@ -9,7 +10,7 @@ pub struct Parameter {
 }
 
 #[allow(non_camel_case_types)]
-#[derive(Deserialize, Debug, strum_macros::Display, Clone, Eq, PartialEq, Hash)]
+#[derive(Deserialize, Debug, strum_macros::Display, Clone, Eq, PartialEq, Hash, Sequence)]
 pub enum ParameterName {
     msl,
     t,
@@ -32,7 +33,7 @@ pub enum ParameterName {
     Wsymb2,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ParameterValue {
     Decimal(f64),
     Integer(i32),
