@@ -11,7 +11,7 @@ pub fn show_forecast(
 ) {
     let all_parameters = enum_iterator::all::<ParameterName>().collect::<Vec<_>>();
 
-    let parameters = parameters.unwrap_or(all_parameters.as_slice());
+    let parameter_names = parameters.unwrap_or(all_parameters.as_slice());
     let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len());
 
     let mut table = prettytable::Table::new();
@@ -19,7 +19,7 @@ pub fn show_forecast(
     let mut titles: Vec<Cell> = Vec::new();
     titles.push(Cell::new("Time"));
 
-    for parameter in parameters {
+    for parameter in parameter_names {
         titles.push(Cell::new(parameter.to_string().as_str()));
     }
 
@@ -29,13 +29,13 @@ pub fn show_forecast(
         let mut row = Row::new(Vec::new());
         row.add_cell(Cell::new(time_series.valid_time.to_string().as_str()));
 
-        for key in parameters {
+        for name in parameter_names {
             let mut f = |s| {
                 row.add_cell(Cell::new(s));
             };
 
-            if let Some(value) = time_series.parameters.get(key) {
-                f(value.values[0].to_string().as_str())
+            if let Some(parameter) = time_series.parameters.get(name) {
+                f(parameter.to_string().as_str());
             } else {
                 f("N/A")
             }

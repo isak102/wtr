@@ -5,6 +5,7 @@ use enum_iterator::Sequence;
 pub struct Parameter {
     pub name: ParameterName,
     pub level_type: String,
+    pub unit: Option<&'static str>,
     pub level: u32,
     pub values: Vec<ParameterValue>,
 }
@@ -31,6 +32,32 @@ pub enum ParameterName {
     pmean,
     pmedian,
     Wsymb2,
+}
+
+impl ParameterName {
+    fn get_unit(self) -> Option<&'static str> {
+        match self {
+            ParameterName::msl => Some("hPa"),
+            ParameterName::t => Some("C"),
+            ParameterName::vis => Some("km"),
+            ParameterName::wd => Some("degree"),
+            ParameterName::ws => Some("m/s"),
+            ParameterName::r => Some("%"),
+            ParameterName::tstm => Some("%"),
+            ParameterName::tcc_mean => Some("octas"),
+            ParameterName::lcc_mean => Some("octas"),
+            ParameterName::mcc_mean => Some("octas"),
+            ParameterName::hcc_mean => Some("octas"),
+            ParameterName::gust => Some("m/s"),
+            ParameterName::pmin => Some("mm/h"),
+            ParameterName::pmax => Some("mm/h"),
+            ParameterName::spp => Some("%"),
+            ParameterName::pcat => None,
+            ParameterName::pmean => Some("mm/h"),
+            ParameterName::pmedian => Some("mm/h"),
+            ParameterName::Wsymb2 => None,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -100,7 +127,17 @@ impl Display for ParameterValue {
 
 impl Display for Parameter {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.name, self.values[0].to_string())
+        assert!(
+            self.values.len() == 1,
+            "Parameters should always have exactly one value"
+        );
+
+        write!(
+            f,
+            "{}{}",
+            self.values[0].to_string(),
+            self.unit.unwrap_or("")
+        )
     }
 }
 
@@ -153,8 +190,9 @@ impl<'de> Deserialize<'de> for Parameter {
         }
 
         Ok(Parameter {
-            name: internal.name,
+            name: internal.name.clone(),
             level_type: internal.level_type,
+            unit: internal.name.get_unit(),
             level: internal.level,
             values: new_values,
         })
