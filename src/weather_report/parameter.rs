@@ -34,6 +34,14 @@ pub enum ParameterName {
     Wsymb2,
 }
 
+#[derive(Debug, Clone)]
+pub enum ParameterValue {
+    Decimal(f64),
+    Integer(i32),
+    PercipitationCategory(u8),
+    WeatherSymbol(u8),
+}
+
 impl ParameterName {
     fn get_unit(self) -> Option<&'static str> {
         match self {
@@ -58,14 +66,6 @@ impl ParameterName {
             ParameterName::Wsymb2 => None,
         }
     }
-}
-
-#[derive(Debug, Clone)]
-pub enum ParameterValue {
-    Decimal(f64),
-    Integer(i32),
-    PercipitationCategory(u8),
-    WeatherSymbol(u8),
 }
 
 impl Display for ParameterValue {
