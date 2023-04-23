@@ -9,7 +9,7 @@ pub async fn get_weather_report(location: Location) -> Result<WeatherReport, Box
     let url =
         format!("https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{}/lat/{}/data.json", lon, lat);
 
-    let response = reqwest::get(dbg!(url)).await.unwrap();
+    let response = reqwest::get(url).await.unwrap();
     let json = response.text().await.unwrap();
 
     match from_str(json.as_str()) {

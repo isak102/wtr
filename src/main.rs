@@ -5,24 +5,22 @@ pub mod types;
 pub mod ui;
 pub mod weather_report;
 
+use weather_report::parameter::ParameterName;
+
 #[tokio::main]
 async fn main() {
-    eprintln!("Starting...");
     let weather_report = io::get_weather_report(types::Location::Sollentuna)
         .await
         .unwrap();
 
     ui::show_forecast(
         &weather_report,
-        &[
-            weather_report::parameter::ParameterName::t,
-            weather_report::parameter::ParameterName::pcat,
-            weather_report::parameter::ParameterName::Wsymb2,
-        ],
-        None,
+        Some(&[
+            ParameterName::t,
+            ParameterName::ws,
+            ParameterName::Wsymb2,
+            ParameterName::tcc_mean,
+        ]),
+        Some(5),
     );
-    //
-    // for time_series in weather_report.time_series {
-    //     println!("{}", time_series);
-    // }
 }
