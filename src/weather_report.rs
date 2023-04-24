@@ -14,7 +14,7 @@ use self::parameter::{ParameterName, ParameterValue};
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WeatherReport {
+pub struct WeatherReport { // TODO: add location field which is ignored by the deserializer
     #[serde(with = "datetime_format")]
     approved_time: DateTime<Utc>,
     #[serde(with = "datetime_format")]

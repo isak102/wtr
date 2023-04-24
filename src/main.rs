@@ -11,9 +11,9 @@ pub mod weather_report;
 async fn main() {
     let args = args::Args::parse();
 
-    let weather_report = io::get_weather_report(types::Location::Sollentuna)
+    let weather_report = io::get_weather_report(args.location)
         .await
-        .unwrap();
+        .expect("Error getting weather report");
 
     ui::show_forecast(
         &weather_report,

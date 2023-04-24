@@ -1,3 +1,5 @@
+#[derive(clap::ValueEnum, Clone, Debug, strum_macros::Display)]
+#[clap(rename_all = "verbatim")]
 pub enum Location {
     Sollentuna,
     Uppsala,
