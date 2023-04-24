@@ -5,22 +5,28 @@ use chrono::{DateTime, Utc};
 use serde::{self, Deserialize, Deserializer};
 
 mod datetime_format;
+mod io;
 pub mod parameter;
 
 pub use parameter::Parameter;
+
+use crate::types::Location;
 
 use self::parameter::{ParameterName, ParameterValue};
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WeatherReport { // TODO: add location field which is ignored by the deserializer
+pub struct WeatherReport {
+    // TODO: add location field which is ignored by the deserializer
     #[serde(with = "datetime_format")]
     approved_time: DateTime<Utc>,
     #[serde(with = "datetime_format")]
     reference_time: DateTime<Utc>,
-    geometry: Geometry,
     pub time_series: Vec<TimeSeries>,
+    #[serde(skip)]
+    pub location: Option<Location>,
+    geometry: Geometry,
 }
 
 #[allow(dead_code)]

@@ -2,7 +2,6 @@ use clap::Parser;
 use weather_report::WeatherReport;
 
 pub mod args;
-pub mod io;
 pub mod types;
 pub mod ui;
 pub mod weather_report;
@@ -11,7 +10,7 @@ pub mod weather_report;
 async fn main() {
     let args = args::Args::parse();
 
-    let weather_report = io::get_weather_report(args.location)
+    let weather_report = WeatherReport::get(args.location)
         .await
         .expect("Error getting weather report");
 
