@@ -1,4 +1,5 @@
 use clap::Parser;
+use weather_report::parameter::ParameterName;
 use weather_report::WeatherReport;
 
 pub mod args;
@@ -14,12 +15,21 @@ async fn main() {
         .await
         .expect("Error getting weather report");
 
+    let default_parameters = &[
+        ParameterName::t,
+        ParameterName::ws,
+        ParameterName::gust,
+        ParameterName::pmin,
+        ParameterName::pmax,
+        ParameterName::Wsymb2,
+    ];
+    
     ui::show_forecast(
         &weather_report,
         {
             match &args.parameters {
                 Some(parameters) => Some(parameters.as_slice()),
-                None => None,
+                None => Some(default_parameters),
             }
         },
         Some(args.hours.unwrap_or(7)),
