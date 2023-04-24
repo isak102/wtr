@@ -1,6 +1,8 @@
 use enum_iterator;
 use prettytable::{self, Cell, Row};
 
+use chrono::{DateTime, Local};
+
 use super::weather_report::parameter::ParameterName;
 use super::weather_report::WeatherReport;
 
@@ -31,7 +33,9 @@ pub fn show_forecast(
         .take(hours_to_show as usize)
     {
         let mut row = Row::new(Vec::new());
-        row.add_cell(Cell::new(time_series.valid_time.to_string().as_str()));
+
+        let local_time: DateTime<Local> = time_series.valid_time.into();
+        row.add_cell(Cell::new(local_time.to_string().as_str()));
 
         for name in parameter_names {
             let mut f = |s| {
