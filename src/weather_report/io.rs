@@ -13,9 +13,9 @@ impl WeatherReport {
         let response = reqwest::get(url).await.unwrap();
         let json = response.text().await.unwrap();
 
-        match from_str(json.as_str()) {
-            Ok(v) => Ok(v),
-            Err(e) => Err(Box::new(e)),
-        }
+        let mut weather_report: WeatherReport = from_str(&json.as_str())?;
+        weather_report.location = Some(location);
+
+        Ok(weather_report)
     }
 }

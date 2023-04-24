@@ -1,5 +1,5 @@
-use prettytable::{self, Cell, Row};
 use enum_iterator;
+use prettytable::{self, Cell, Row};
 
 use super::weather_report::parameter::ParameterName;
 use super::weather_report::WeatherReport;
@@ -25,7 +25,11 @@ pub fn show_forecast(
 
     table.set_titles(Row::new(titles));
 
-    for time_series in weather_report.time_series.iter().take(hours_to_show as usize) {
+    for time_series in weather_report
+        .time_series
+        .iter()
+        .take(hours_to_show as usize)
+    {
         let mut row = Row::new(Vec::new());
         row.add_cell(Cell::new(time_series.valid_time.to_string().as_str()));
 
@@ -43,5 +47,12 @@ pub fn show_forecast(
         table.add_row(row);
     }
 
+    println!(
+        "Location: {}",
+        &weather_report
+            .location
+            .as_ref()
+            .expect("Location should always be set")
+    );
     table.printstd();
 }
