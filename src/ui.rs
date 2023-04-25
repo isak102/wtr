@@ -36,7 +36,12 @@ pub fn show_forecast(
         let mut row = Row::new(Vec::new());
 
         let local_time: DateTime<Local> = time_series.valid_time.into();
-        row.add_cell(Cell::new(local_time.to_string().as_str()));
+        row.add_cell(Cell::new(
+            local_time
+                .format_localized("%a %d/%m %H:%M", chrono::Locale::sv_SE)
+                .to_string()
+                .as_str(),
+        ));
 
         for name in parameter_names {
             let mut f = |s, c: Option<(u32, u32)>| {
