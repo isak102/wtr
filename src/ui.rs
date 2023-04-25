@@ -1,5 +1,5 @@
 use enum_iterator;
-use prettytable::{self, Cell, Row};
+use prettytable::{self, Attr, Cell, Row};
 
 use chrono::{DateTime, Local};
 
@@ -38,14 +38,23 @@ pub fn show_forecast(
         row.add_cell(Cell::new(local_time.to_string().as_str()));
 
         for name in parameter_names {
-            let mut f = |s| {
-                row.add_cell(Cell::new(s));
+            let mut f = |s, c: Option<(u32, u32)>| {
+                let cell = Cell::new(s);
+
+                let cell = match c {
+                    Some(color) => cell
+                        .with_style(Attr::ForegroundColor(color.0))
+                        .with_style(Attr::Bold),
+                    None => cell,
+                };
+
+                row.add_cell(cell);
             };
 
             if let Some(parameter) = time_series.parameters.get(name) {
-                f(parameter.to_string().as_str());
+                f(parameter.to_string().as_str(), parameter.get_color());
             } else {
-                f("N/A")
+                f("N/A", None)
             }
         }
         table.add_row(row);
