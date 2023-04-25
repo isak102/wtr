@@ -1,5 +1,5 @@
 use enum_iterator;
-use prettytable::{self, Attr, Cell, Row};
+use prettytable::{self, format, Attr, Cell, Row};
 
 use chrono::{DateTime, Local};
 
@@ -17,6 +17,7 @@ pub fn show_forecast(
     let hours_to_show = hours_to_show.unwrap_or(weather_report.time_series.len() as u8);
 
     let mut table = prettytable::Table::new();
+    table.set_format(*format::consts::FORMAT_NO_LINESEP_WITH_TITLE);
 
     let mut titles: Vec<Cell> = Vec::new();
     titles.push(Cell::new("Time"));
