@@ -32,34 +32,29 @@ impl Parameter {
             };
         }
 
-        // TODO: read this from args or file
-        fn get_color_cutoffs(param: &Parameter) -> ColorCutoffs {
-            match param.name {
-                // TODO: complete the questionable ones here, dont return color cutoff
-                // for all colors
-                ParameterName::t => color_cutoffs!(5.0, 10.0, true),
-                ParameterName::ws => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::gust => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::tcc_mean => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::lcc_mean => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::mcc_mean => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::hcc_mean => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::pmin => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::pmax => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::pmean => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::pmedian => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::pcat => color_cutoffs!(0.0, 1.0, true), // IDK
-                ParameterName::spp => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::tstm => color_cutoffs!(0.0, 1.0, false),
-                ParameterName::msl => color_cutoffs!(0.0, 1.0, false), // IDK
-                ParameterName::vis => color_cutoffs!(0.0, 1.0, true),
-                ParameterName::wd => color_cutoffs!(0.0, 1.0, false), // IDK
-                ParameterName::r => color_cutoffs!(0.0, 1.0, true),   // IDK
-                ParameterName::Wsymb2 => color_cutoffs!(0.0, 1.0, false),
-            }
-        }
+        // TODO: complete the questionable ones here, dont return color cutoff for all colors
+        let cutoffs = match self.name {
+            ParameterName::t => color_cutoffs!(5.0, 10.0, true),
+            ParameterName::ws => color_cutoffs!(2.0, 4.0, false),
+            ParameterName::gust => color_cutoffs!(4.0, 6.0, false),
+            ParameterName::tcc_mean => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::lcc_mean => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::mcc_mean => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::hcc_mean => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::pmin => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::pmax => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::pmean => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::pmedian => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::pcat => return None,
+            ParameterName::spp => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::tstm => color_cutoffs!(0.0, 1.0, false),
+            ParameterName::msl => color_cutoffs!(0.0, 1.0, false), // IDK
+            ParameterName::vis => color_cutoffs!(0.0, 1.0, true),
+            ParameterName::wd => color_cutoffs!(0.0, 1.0, false), // IDK
+            ParameterName::r => color_cutoffs!(0.0, 1.0, true),   // IDK
+            ParameterName::Wsymb2 => return None,
+        };
 
-        let cutoffs = get_color_cutoffs(&self);
         let value = match &self.values.first().expect("All values only have one value") {
             ParameterValue::Decimal(value) => *value,
             ParameterValue::Integer(value) => *value as f64,
