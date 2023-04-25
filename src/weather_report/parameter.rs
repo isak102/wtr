@@ -1,5 +1,6 @@
 use super::*;
 use enum_iterator::Sequence;
+use prettytable::color::{self, Color};
 
 #[derive(Debug)]
 pub struct Parameter {
@@ -8,6 +9,85 @@ pub struct Parameter {
     pub unit: Option<&'static str>,
     pub level: u32,
     pub values: Vec<ParameterValue>,
+}
+
+impl Parameter {
+    /// Returns a optional tuple on the form of (Primary, Secondary). Secondary should be used as FG is
+    /// primary is used as BG
+    pub fn get_color(&self) -> Option<(Color, Color)> {
+        // Define an updated ColorCutoffs struct
+        struct ColorCutoffs {
+            min: f64,
+            max: f64,
+            high_better: bool, // if a high value is better than a low value, for example temperature
+        }
+
+        macro_rules! color_cutoffs {
+            ($min:expr, $max:expr, $high_better:expr) => {
+                ColorCutoffs {
+                    min: $min,
+                    max: $max,
+                    high_better: $high_better,
+                }
+            };
+        }
+
+        // TODO: read this from args or file
+        fn get_color_cutoffs(param: &Parameter) -> ColorCutoffs {
+            match param.name {
+                // TODO: complete the questionable ones here, dont return color cutoff
+                // for all colors
+                ParameterName::t => color_cutoffs!(5.0, 10.0, true),
+                ParameterName::ws => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::gust => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::tcc_mean => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::lcc_mean => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::mcc_mean => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::hcc_mean => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::pmin => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::pmax => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::pmean => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::pmedian => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::pcat => color_cutoffs!(0.0, 1.0, true), // IDK
+                ParameterName::spp => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::tstm => color_cutoffs!(0.0, 1.0, false),
+                ParameterName::msl => color_cutoffs!(0.0, 1.0, false), // IDK
+                ParameterName::vis => color_cutoffs!(0.0, 1.0, true),
+                ParameterName::wd => color_cutoffs!(0.0, 1.0, false), // IDK
+                ParameterName::r => color_cutoffs!(0.0, 1.0, true),   // IDK
+                ParameterName::Wsymb2 => color_cutoffs!(0.0, 1.0, false),
+            }
+        }
+
+        let cutoffs = get_color_cutoffs(&self);
+        let value = match &self.values.first().expect("All values only have one value") {
+            ParameterValue::Decimal(value) => *value,
+            ParameterValue::Integer(value) => *value as f64,
+            ParameterValue::PercipitationCategory(_) => return None, // TODO: fix these
+            ParameterValue::WeatherSymbol(_) => return None,
+        };
+
+        let color = {
+            if cutoffs.high_better {
+                if value > cutoffs.max {
+                    (color::GREEN, color::BLACK)
+                } else if value > cutoffs.min {
+                    (color::YELLOW, color::BLACK)
+                } else {
+                    (color::RED, color::BLACK)
+                }
+            } else {
+                if value < cutoffs.min {
+                    (color::GREEN, color::BLACK)
+                } else if value < cutoffs.max {
+                    (color::YELLOW, color::BLACK)
+                } else {
+                    (color::RED, color::BLACK)
+                }
+            }
+        };
+        Some(color)
+    }
 }
 
 #[allow(non_camel_case_types)]
