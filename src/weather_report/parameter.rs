@@ -198,7 +198,7 @@ impl Display for ParameterValue {
         }
 
         match self {
-            Self::Decimal(v) => write!(f, "{}", v),
+            Self::Decimal(v) => write!(f, "{:.1}", v),
             Self::Integer(v) => write!(f, "{}", v),
             Self::PercipitationCategory(c) => write!(f, "{}", pcat_to_str(c)),
             Self::WeatherSymbol(c) => write!(f, "{}", wsymb_to_str(c)),
