@@ -19,6 +19,7 @@ async fn main() {
         ParameterName::t,
         ParameterName::ws,
         ParameterName::gust,
+        ParameterName::tcc_mean,
         ParameterName::pmin,
         ParameterName::pmax,
         ParameterName::Wsymb2,
