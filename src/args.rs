@@ -11,6 +11,6 @@ pub struct Args {
     #[arg(short, long, num_args(1..ParameterName::count()), value_name = "PARAMETER", value_enum)]
     pub parameters: Option<Vec<ParameterName>>,
     /// The location to use
-    #[arg(short, default_value_t=crate::types::Location::Sollentuna)]
+    #[arg(short, default_value_t=crate::types::Location::Uppsala)]
     pub location: Location,
 }
