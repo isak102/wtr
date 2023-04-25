@@ -46,12 +46,12 @@ impl Parameter {
             ParameterName::pmean => color_cutoffs!(0.0, 1.0, false),
             ParameterName::pmedian => color_cutoffs!(0.0, 1.0, false),
             ParameterName::pcat => return None,
-            ParameterName::spp => color_cutoffs!(0.0, 1.0, false),
-            ParameterName::tstm => color_cutoffs!(0.0, 1.0, false),
-            ParameterName::msl => color_cutoffs!(0.0, 1.0, false), // IDK
-            ParameterName::vis => color_cutoffs!(0.0, 1.0, true),
-            ParameterName::wd => color_cutoffs!(0.0, 1.0, false), // IDK
-            ParameterName::r => color_cutoffs!(0.0, 1.0, true),   // IDK
+            ParameterName::spp => color_cutoffs!(33.0, 66.0, false),
+            ParameterName::tstm => color_cutoffs!(0.0, 50.0, false),
+            ParameterName::msl => return None,
+            ParameterName::vis => return None,
+            ParameterName::wd => return None,
+            ParameterName::r => return None,
             ParameterName::Wsymb2 => return None,
         };
 
@@ -72,7 +72,7 @@ impl Parameter {
                     (color::RED, color::BLACK)
                 }
             } else {
-                if value < cutoffs.min {
+                if value <= cutoffs.min {
                     (color::GREEN, color::BLACK)
                 } else if value < cutoffs.max {
                     (color::YELLOW, color::BLACK)
